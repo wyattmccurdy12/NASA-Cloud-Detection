@@ -75,9 +75,9 @@ def split_image_into_chunks(image_path, out_folder, scene_name, chunk_size=384):
 
                 # Save the current chunk as a separate image
                 # Save the current chunk as a separate image
-                with rasterio.open(chunk_filepath, 'w', **src.meta) as dst:
-                    dst.write(np.moveaxis(data, -1, 0))
-
+                if not os.path.exists(chunk_filepath):
+                    with rasterio.open(chunk_filepath, 'w', **src.meta) as dst:
+                        dst.write(np.moveaxis(data, -1, 0))
 
 
 def process_images_in_dir(top_level_dir, in_folder, out_folder, chunk_size=384):
@@ -94,13 +94,16 @@ def process_images_in_dir(top_level_dir, in_folder, out_folder, chunk_size=384):
             if filename.endswith('.TIF'):
                 # Get the full path of the image file
                 image_file = os.path.join(dirpath, filename)
+                print("Processing image file - ", image_file)
 
                 # Get the scene name from the directory name
                 scene_name = os.path.basename(dirpath)
+                print("In scene - ", scene_name)
 
                 # Split the image into chunks and save them in the output folder
                 split_image_into_chunks(image_file, out_folder, scene_name, chunk_size)
-                print(image_file, "\n", scene_name)
+                # print(image_file, "\n", scene_name)
+
 def main():
 
     top_level_dir = '/home/wyatt.mccurdy/Documents/L8_BIOME_TEST/'
