@@ -35,49 +35,50 @@ def split_image_into_chunks(image_path, out_folder, scene_name, chunk_size=384):
     if not os.path.exists(low_level_out_path):
         os.makedirs(low_level_out_path)
     
+    print("Processing ", scene_name, ", ", tif_file_name)
 
     # Open the image
-    with rasterio.open(image_path) as src:
-        # Get the image dimensions
-        height = src.height
-        width = src.width
+    # with rasterio.open(image_path) as src:
+    #     # Get the image dimensions
+    #     height = src.height
+    #     width = src.width
 
-        # Calculate the new dimensions with zero padding
-        new_height = int(np.ceil(height / chunk_size) * chunk_size)
-        new_width = int(np.ceil(width / chunk_size) * chunk_size)
+    #     # Calculate the new dimensions with zero padding
+    #     new_height = int(np.ceil(height / chunk_size) * chunk_size)
+    #     new_width = int(np.ceil(width / chunk_size) * chunk_size)
 
-        # Calculate the padding sizes
-        height_padding = new_height - height
-        width_padding = new_width - width
+    #     # Calculate the padding sizes
+    #     height_padding = new_height - height
+    #     width_padding = new_width - width
 
-        # Resize/buffer the image with zeros
-        padded_image = np.pad(src.read(), ((0, 0), (0, height_padding), (0, width_padding)), mode='constant')
+        # # Resize/buffer the image with zeros
+        # padded_image = np.pad(src.read(), ((0, 0), (0, height_padding), (0, width_padding)), mode='constant')
 
-        # Calculate the number of chunks in each dimension
-        num_chunks_height = new_height // chunk_size
-        num_chunks_width = new_width // chunk_size
+        # # Calculate the number of chunks in each dimension
+        # num_chunks_height = new_height // chunk_size
+        # num_chunks_width = new_width // chunk_size
 
-        # Reshape the image into chunks
-        reshaped_image = padded_image.reshape(num_chunks_height, chunk_size, num_chunks_width, chunk_size, -1)
+        # # Reshape the image into chunks
+        # reshaped_image = padded_image.reshape(num_chunks_height, chunk_size, num_chunks_width, chunk_size, -1)
 
-        # Transpose the axes to get the chunks in the correct order
-        chunks = reshaped_image.transpose(0, 2, 1, 3, 4)
+        # # Transpose the axes to get the chunks in the correct order
+        # chunks = reshaped_image.transpose(0, 2, 1, 3, 4)
 
-        # Iterate over the chunks and save them as separate images
-        for i in range(chunks.shape[0]):
-            for j in range(chunks.shape[1]):
-                # Get the current chunk
-                data = chunks[i, j]
+        # # Iterate over the chunks and save them as separate images
+        # for i in range(chunks.shape[0]):
+        #     for j in range(chunks.shape[1]):
+        #         # Get the current chunk
+        #         data = chunks[i, j]
 
-                # Create the filename for the current chunk
-                chunk_filename = f"{tif_file_name}_{i * chunk_size}_{j * chunk_size}.tif"
-                chunk_filepath = os.path.join(low_level_out_path, chunk_filename)
+        #         # Create the filename for the current chunk
+        #         chunk_filename = f"{tif_file_name}_{i * chunk_size}_{j * chunk_size}.tif"
+        #         chunk_filepath = os.path.join(low_level_out_path, chunk_filename)
 
-                # Save the current chunk as a separate image
-                # Save the current chunk as a separate image
-                if not os.path.exists(chunk_filepath):
-                    with rasterio.open(chunk_filepath, 'w', **src.meta) as dst:
-                        dst.write(np.moveaxis(data, -1, 0))
+        #         # Save the current chunk as a separate image
+        #         # Save the current chunk as a separate image
+        #         if not os.path.exists(chunk_filepath):
+        #             with rasterio.open(chunk_filepath, 'w', **src.meta) as dst:
+        #                 dst.write(np.moveaxis(data, -1, 0))
 
 
 def process_images_in_dir(top_level_dir, in_folder, out_folder, chunk_size=384):
