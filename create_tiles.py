@@ -1,4 +1,3 @@
-
 import rasterio
 import numpy as np
 import os
@@ -21,6 +20,7 @@ def split_image_into_chunks(image_path, out_folder, scene_name, chunk_size=384):
     Returns:
     None
     """
+
 
     # Get name of scene and assign it to subfolder name
     tif_file_name = os.path.basename(image_path).split('.')[0]
@@ -89,6 +89,10 @@ def process_images_in_dir(top_level_dir, in_folder, out_folder, chunk_size=384):
 
     # Traverse through all the directories and files in the input folder
     for dirpath, dirnames, filenames in os.walk(in_folder):
+
+        if dirpath.endswith('_B8') or dirpath.endswith('_QA'):
+            continue
+
         # Process each TIFF image file
         for filename in filenames:
             if filename.endswith('.TIF'):
