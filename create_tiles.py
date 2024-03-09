@@ -97,6 +97,8 @@ def process_images_in_dir(top_level_dir, in_folder, out_folder, chunk_size=384):
         # Process each TIFF image file
         for filename in filenames:
             if filename.endswith('.TIF'):
+                fwe = os.path.splitext(filename)[0]
+                if fwe.endswith('_B8') or fwe.endswith('_BQA'): continue
                 # Get the full path of the image file
                 image_file = os.path.join(dirpath, filename)
                 # print("Processing image file - ", image_file)
