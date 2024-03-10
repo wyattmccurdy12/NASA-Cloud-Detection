@@ -29,6 +29,11 @@ def split_image_into_chunks_gtif(image_path, out_folder, scene_name, chunk_size=
     # print("high level out path: ", high_level_out_path)
     # print("low level out path: ", low_level_out_path)
 
+    # If the tif file name ends with "_B8", then double chunk size
+    if tif_file_name.endswith('_B8'):
+        print("Doubling chunk size for ", tif_file_name)
+        chunk_size = chunk_size * 2
+
     if not os.path.exists(high_level_out_path):
         os.makedirs(high_level_out_path)
     
@@ -171,14 +176,14 @@ def process_images_in_dir(top_level_dir, in_folder, out_folder, chunk_size=384):
     # Traverse through all the directories and files in the input folder
     for dirpath, dirnames, filenames in os.walk(in_folder):
 
-        if dirpath.endswith('_B8'):
-            continue
+        # if dirpath.endswith('_B8'):
+        #     continue
 
         # Process each TIFF image file
         for filename in tqdm(filenames, "Processing files: "):
             if filename.endswith('.TIF'):
                 fwe = os.path.splitext(filename)[0]
-                if fwe.endswith('_B8'): continue
+                # if fwe.endswith('_B8'): continue
                 # Get the full path of the image file
                 image_file = os.path.join(dirpath, filename)
                 # print("Processing image file - ", image_file)
