@@ -7,7 +7,6 @@ import glob
 from tqdm import tqdm
 # import fmask
 
-
 def split_image_into_chunks_gtif(image_path, out_folder, scene_name, chunk_size=384):
     """
     Split an image into chunks of a specific size and save them in an output location as georeferenced geotiff
@@ -90,7 +89,6 @@ def split_image_into_chunks_gtif(image_path, out_folder, scene_name, chunk_size=
                     with rasterio.open(chunk_filepath, 'w', driver='GTiff', width=chunk_size, height=chunk_size, count=1, dtype=src.dtypes[0], transform=new_transform, crs=src.crs) as dst:
                         dst.write(np.moveaxis(data, -1, 0))
 
-
 def split_image_into_chunks_jp2(image_path, out_folder, scene_name, chunk_size=384):
     """
     Split an image into chunks of a specific size and save them in an output location
@@ -163,7 +161,6 @@ def split_image_into_chunks_jp2(image_path, out_folder, scene_name, chunk_size=3
                 with rasterio.open(chunk_filepath, 'w', driver='JP2OpenJPEG', width=chunk_size, height=chunk_size, count=1, dtype=src.dtypes[0]) as dst:
                     dst.write(np.moveaxis(data, -1, 0))
 
-
 def process_images_in_dir(top_level_dir, in_folder, out_folder, chunk_size=384):
     """
     Process all images within a top level directory given a name of an input and output folder within said directory.
@@ -221,8 +218,6 @@ def main():
     # execution_time = (end_time - start_time) / 60
     # print(f"Execution time: {execution_time} minutes")
     #########################################
-
-
 
 if __name__ == "__main__":
     main()
