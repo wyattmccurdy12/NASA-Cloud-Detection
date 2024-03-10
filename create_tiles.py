@@ -91,8 +91,6 @@ def split_image_into_chunks_gtif(image_path, out_folder, scene_name, chunk_size=
                         dst.write(np.moveaxis(data, -1, 0))
 
 
-
-
 def split_image_into_chunks_jp2(image_path, out_folder, scene_name, chunk_size=384):
     """
     Split an image into chunks of a specific size and save them in an output location
@@ -201,7 +199,19 @@ def process_images_in_dir(top_level_dir, in_folder, out_folder, chunk_size=384):
 def main():
 
     ## FOR ATTEMPTED RUNS ON THE LINUX MACHINE ##
-    # top_level_dir = '/home/wyatt.mccurdy/Documents/L8_BIOME_TEST/'
+    top_level_dir = '/home/wyatt.mccurdy/Documents/L8_BIOME_TEST/'
+    original_imgs = 'Original_Extracted'
+    output_imgs = 'Chunked'
+
+    start_time = time.time()
+    process_images_in_dir(top_level_dir, original_imgs, output_imgs)
+    end_time = time.time()
+    execution_time = (end_time - start_time) / 60
+    print(f"Execution time: {execution_time} minutes")
+    #########################################
+
+    ## FOR ATTEMPTED RUNS ON HOME MACHINE ##
+    # top_level_dir = 'C:/Users/12078/OneDrive/Documents/TESTFOLDER/'
     # original_imgs = 'Original_Extracted'
     # output_imgs = 'Chunked'
 
@@ -211,17 +221,6 @@ def main():
     # execution_time = (end_time - start_time) / 60
     # print(f"Execution time: {execution_time} minutes")
     #########################################
-
-    ## FOR ATTEMPTED RUNS ON HOME MACHINE ##
-    top_level_dir = 'C:/Users/12078/OneDrive/Documents/TESTFOLDER/'
-    original_imgs = 'Original_Extracted'
-    output_imgs = 'Chunked'
-
-    start_time = time.time()
-    process_images_in_dir(top_level_dir, original_imgs, output_imgs)
-    end_time = time.time()
-    execution_time = (end_time - start_time) / 60
-    print(f"Execution time: {execution_time} minutes")
 
 
 
