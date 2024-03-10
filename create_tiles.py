@@ -4,6 +4,7 @@ import os
 import time
 import os
 import glob
+from tqdm import tqdm
 # import fmask
 
 
@@ -75,10 +76,10 @@ def split_image_into_chunks(image_path, out_folder, scene_name, chunk_size=384):
                 chunk_filepath = os.path.join(low_level_out_path, chunk_filename)
 
                 # Save the current chunk as a separate image
-                # Save the current chunk as a separate image
-                if not os.path.exists(chunk_filepath):
-                    with rasterio.open(chunk_filepath, 'w', **src.meta) as dst:
-                        dst.write(np.moveaxis(data, -1, 0))
+# if not os.path.exists(chunk_filepath):
+                # TODO check to make sure out dtype is a valid dtype
+                with rasterio.open(chunk_filepath, 'w', driver='JP2OpenJPEG', width=chunk_size, height=chunk_size, count=1, dtype=src.dtypes[0]) as dst:
+                    dst.write(np.moveaxis(data, -1, 0))
 
 
 def process_images_in_dir(top_level_dir, in_folder, out_folder, chunk_size=384):
@@ -95,7 +96,7 @@ def process_images_in_dir(top_level_dir, in_folder, out_folder, chunk_size=384):
             continue
 
         # Process each TIFF image file
-        for filename in filenames:
+        for filename in tqdm(filenames, desc="Processing images"):
             if filename.endswith('.TIF'):
                 fwe = os.path.splitext(filename)[0]
                 if fwe.endswith('_B8') or fwe.endswith('_BQA'): continue
@@ -113,7 +114,20 @@ def process_images_in_dir(top_level_dir, in_folder, out_folder, chunk_size=384):
 
 def main():
 
-    top_level_dir = '/home/wyatt.mccurdy/Documents/L8_BIOME_TEST/'
+    ## FOR ATTEMPTED RUNS ON THE LINUX MACHINE ##
+    # top_level_dir = '/home/wyatt.mccurdy/Documents/L8_BIOME_TEST/'
+    # original_imgs = 'Original_Extracted'
+    # output_imgs = 'Chunked'
+
+    # start_time = time.time()
+    # process_images_in_dir(top_level_dir, original_imgs, output_imgs)
+    # end_time = time.time()
+    # execution_time = (end_time - start_time) / 60
+    # print(f"Execution time: {execution_time} minutes")
+    #########################################
+
+    ## FOR ATTEMPTED RUNS ON HOME MACHINE ##
+    top_level_dir = 'C:/Users/12078/OneDrive/Documents/TESTFOLDER/'
     original_imgs = 'Original_Extracted'
     output_imgs = 'Chunked'
 
@@ -124,22 +138,6 @@ def main():
     print(f"Execution time: {execution_time} minutes")
 
 
-    # # Specify the path to the image
-    # image_path = '/home/wyatt.mccurdy/Documents/L8_BIOME_TEST/Original_Extracted/LC80160502014041LGN00/LC80160502014041LGN00_B1.TIF'
-    # # Specify the output folder
-    # out_folder = '/home/wyatt.mccurdy/Documents/L8_BIOME_TEST/Chunked/'
-    # # Specify the scene name
-    # scene_name = 'LC80160502014041LGN00'
-    # # Specify the chunk size
-    # chunk_size = 384
-
-    # # Call the split_image_into_chunks function
-    # start_time = time.time()
-    # split_image_into_chunks(image_path, out_folder, scene_name, chunk_size)
-    # end_time = time.time()
-
-    # execution_time = end_time - start_time
-    # print(f"Execution time: {execution_time} seconds")
 
 if __name__ == "__main__":
     main()
