@@ -122,3 +122,24 @@ def download_scenes(dataset, serviceUrl, apiKey, sceneIds, downloadDir):
     else:
         print("Search found no results.\n")
 
+def get_api_key(credentials_file):
+    """
+    Login to the M2M API and return the API key.
+
+    Parameters:
+    credentials_file (str): The path to the JSON file containing the username and password.
+
+    Returns:
+    str: The API key.
+    """
+
+    # Load the credentials from the JSON file
+    with open(credentials_file) as f:
+        credentials = json.load(f)
+
+    # Login to the M2M API
+    serviceUrl = "https://m2m.cr.usgs.gov/api/api/json/stable/"
+    payload = {"username": credentials['username'], "password": credentials['password']}
+    apiKey = sendRequest(serviceUrl + "login", payload)
+
+    return apiKey

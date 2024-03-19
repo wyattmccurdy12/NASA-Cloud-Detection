@@ -8,20 +8,19 @@ import datetime
 import json
 from download_scenes_from_scene_list_utils import *
 
-top_dir = r'C:\Users\12078\Downloads\l8cloudmasks'
+# top_dir = r'C:\Users\12078\Downloads\l8cloudmasks' # This was for my personal machine - now it will be an argument
+top_dir = r''
 
-with open('m2m_credentials.json') as f:
-    credentials = json.load(f)
-
-# Login to the M2M API
+datasetName = 'landsat_ot_c2_l1'
 serviceUrl = "https://m2m.cr.usgs.gov/api/api/json/stable/"
-payload = {"username": credentials['username'], "password": credentials['password']}
-apiKey = sendRequest(serviceUrl + "login", payload)
+
+# Get the api key
+apiKey = get_api_key('m2m_credentials.json')
 
 # Go through existing zips and find scenes inside
 # Create folder with scene name and unzip the scene
 # Define dataset
-datasetName = 'landsat_ot_c2_l1'
+
 # payload = {'datasetName': datasetName, 'maxResults': 10}
 # datasets = sendRequest(serviceUrl + "dataset-search", payload, apiKey)
 # dataset = datasets[0]
@@ -122,3 +121,5 @@ payload = {'datasetName' : dataset['datasetAlias'],
 print("Searching scenes...\n")
 scenes = sendRequest(serviceUrl + "scene-search", payload, apiKey)
 print("Scenes found: " , scenes)
+
+

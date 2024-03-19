@@ -1,3 +1,9 @@
+'''
+This script is for processing images in a directory and cutting them up into tiled images. It will pad the image so that x and y are multiples of 
+what was used in the CloudNet paper, and save them to a new directory. 
+It has a method for doing this with jp2 compression but also without - I just ended up using GeoTIFF.
+'''
+
 import rasterio
 import numpy as np
 import os
