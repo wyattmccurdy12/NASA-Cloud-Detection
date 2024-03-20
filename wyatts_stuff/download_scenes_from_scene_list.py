@@ -24,7 +24,8 @@ from download_scenes_from_scene_list_utils import *
 # Add main function
 def main():
     # Initial variable setting
-    top_dir = input("Please provide top level dir (containing properly named folders): ")
+    # top_dir = input("Please provide top level dir (containing properly named folders): ")
+    top_dir = r'C:\Users\12078\OneDrive\Desktop\sample_scenes'
     datasetName = 'landsat_ot_c2_l1'
     serviceUrl = "https://m2m.cr.usgs.gov/api/api/json/stable/"
 
@@ -36,9 +37,7 @@ def main():
 
     for sceneId in sceneIds:
         # Run the helper function that 
-        retrieve_l8c2l1_scene_from_usgs(sceneId)
-
-
+        retrieve_l8c2l1_scene_from_usgs(top_dir, serviceUrl, apiKey, datasetName, sceneId)
 
 # Call main function
 if __name__ == "__main__":

@@ -1,5 +1,3 @@
-# FIXME get methods sorted out for the scene search and download steps
-
 import os
 import numpy as np
 import json
@@ -8,10 +6,6 @@ import sys
 import time
 import datetime
 import json
-
-with open('m2m_credentials.json') as f:
-    credentials = json.load(f)
-
 
 def search_datasets_and_scenes(serviceUrl, apiKey, datasetName, date_acquired, path, row):
     """
@@ -29,34 +23,50 @@ def search_datasets_and_scenes(serviceUrl, apiKey, datasetName, date_acquired, p
     list: The scenes found.
     """
 
-    temporalFilter = {'start' : '2013-03-08', 'end' : '2014-01-01'}
-
-    payload = {'datasetName' : datasetName,
-                                'temporalFilter' : temporalFilter}                     
+    payload = {'datasetName' : datasetName}                     
 
     print("Searching datasets...\n")
     datasets = sendRequest(serviceUrl + "dataset-search", payload, apiKey)
-    print("Datasets found: ")
-    print(datasets)
     dataset = datasets[0]
+    print("Dataset: ", dataset['datasetAlias'])
 
     acquisition_filter = {
         "start": date_acquired,
         "end": date_acquired
     }
+    print("Acquisition Filter: ", acquisition_filter)
 
-    payload = {'datasetName' : dataset['datasetAlias'], 
-                                'maxResults' : 2,
-                                'startingNumber' : 1, 
-                                'sceneFilter' : {'path' : path, 'row' : row, 'acquisitionFilter' : acquisition_filter}}
+    payload = {
+        'datasetName' : dataset['datasetAlias'],
+                'sceneFilter' : 
+                    {
+                        'path' : path, 
+                        'row' : row, 
+                        'acquisitionFilter' : acquisition_filter
+                    }
+                }
 
     print("Searching scenes...\n")
     scenes = sendRequest(serviceUrl + "scene-search", payload, apiKey)
-    print("Scenes found: " , scenes)
+    # print("Scenes found: " , scenes)
 
     return scenes
 
 def retrieve_l8c2l1_scene_from_usgs(directory, serviceUrl, apiKey, datasetName, sceneId):
+    """
+    This function retrieves a Landsat 8 Collection 2 Level-1 scene from USGS based on the provided scene ID.
+    It also extracts the path, row, and acquisition date from the scene's metadata.
+
+    Parameters:
+    directory (str): The directory where the scene files are stored.
+    serviceUrl (str): The base URL of the USGS M2M API.
+    apiKey (str): The API key for the USGS M2M API.
+    datasetName (str): The name of the dataset to retrieve.
+    sceneId (str): The ID of the scene to retrieve.
+
+    Returns:
+    None. Prints the path, row, and acquisition date of the scene, and writes the scene data to a JSON file.
+    """
     # Specify the folder you want to open
     folder_path = os.path.join(directory, sceneId)
 
@@ -122,7 +132,12 @@ def retrieve_l8c2l1_scene_from_usgs(directory, serviceUrl, apiKey, datasetName, 
 
     scenes = search_datasets_and_scenes(serviceUrl, apiKey, datasetName, date_acquired, path, row)
 
-# send http request
+    # temporary TODO :: download the scenes
+
+    # Write scenes variable to json file
+    with open(f'scenes_{sceneId}.json', 'w') as f:
+        json.dump(scenes, f)
+
 def sendRequest(url, data, apiKey = None):  
     json_data = json.dumps(data)
     
@@ -251,6 +266,8 @@ def get_api_key(credentials_file):
 
     # Login to the M2M API
     serviceUrl = "https://m2m.cr.usgs.gov/api/api/json/stable/"
+    username = credentials['username']
+    password = credentials['password']
     payload = {"username": credentials['username'], "password": credentials['password']}
     apiKey = sendRequest(serviceUrl + "login", payload)
 
